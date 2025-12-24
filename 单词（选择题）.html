@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>日语单词学习 - 三模式版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+        }
+        
+        .wechat-app {
+            max-width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            min-height: calc(100vh - 30px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .app-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+        }
+        
+        .big-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .big-button:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        
+        .button-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .button-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .button-warning {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+        
+        .study-card {
+            text-align: center;
+        }
+        
+        .question {
+            font-size: 2rem;
+            margin: 30px 0;
+            color: #182848;
+            font-weight: bold;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+            padding: 0 10px;
+            word-break: break-all;
+        }
+        
+        .mode-indicator {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .mode-kanji {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .mode-kana {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .mode-mixed {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #333;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .option-btn {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            touch-action: manipulation;
+        }
+        
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #f0f5ff;
+            font-weight: bold;
+        }
+        
+        .option-btn.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .option-btn.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .result {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 40px;
+        }
+        
+        .result.correct {
+            color: #28a745;
+        }
+        
+        .result.incorrect {
+            color: #dc3545;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .control-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #333;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4b6cb7, #667eea);
+            border-radius: 5px;
+            transition: width 0.5s;
+            width: 0%;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #182848;
+            text-align: center;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .setting-label {
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .mode-select-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .mode-select-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .mode-select-btn.active {
+            border-color: #667eea;
+            background: #f0f5ff;
+            font-weight: bold;
+        }
+        
+        .wechat-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .wechat-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .switch-slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        input:checked + .switch-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .word-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        
+        .word-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .word-item:last-child {
+            border-bottom: none;
+        }
+        
+        .word-text {
+            font-size: 1.1rem;
+        }
+        
+        .kanji {
+            font-weight: bold;
+        }
+        
+        .kana {
+            color: #667eea;
+            margin-left: 8px;
+        }
+        
+        .word-stats {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            padding: 10px 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            color: #666;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .category-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .category-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-btn.active {
+            border-color: #667eea;
+            background: #f0f5ff;
+            font-weight: bold;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        .mastery-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-mastered {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-learning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-new {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        @media (max-width: 768px) {
+            .question {
+                font-size: 1.6rem;
+            }
+            
+            .option-btn {
+                padding: 18px;
+                font-size: 1.1rem;
+            }
+            
+            .big-button {
+                padding: 18px;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        .mode-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .mode-stat-item {
+            text-align: center;
+        }
+        
+        .mode-stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: block;
+            color: #182848;
+        }
+        
+        .mode-stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="wechat-app">
+        <!-- 主界面 -->
+        <div id="mainScreen" class="tab-content active">
+            <div class="app-header">
+                <div class="header-content">
+                    <h1>日语单词学习</h1>
+                    <div class="subtitle">三模式版 - 假名选汉字/汉字写假名/混合模式</div>
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalWords">156</span>
+                            <span class="stat-label">总单词</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="masteredCount">0</span>
+                            <span class="stat-label">已掌握</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="accuracyRate">0%</span>
+                            <span class="stat-label">正确率</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="app-body">
+                <!-- 学习卡片 -->
+                <div class="card study-card" id="studyCard">
+                    <div class="question" id="questionText">
+                        选择学习模式开始
+                    </div>
+                    
+                    <div class="mode-stats">
+                        <div class="mode-stat-item">
+                            <span class="mode-stat-value" id="modeKanjiAccuracy">0%</span>
+                            <span class="mode-stat-label">假名选汉字</span>
+                        </div>
+                        <div class="mode-stat-item">
+                            <span class="mode-stat-value" id="modeKanaAccuracy">0%</span>
+                            <span class="mode-stat-label">汉字写假名</span>
+                        </div>
+                        <div class="mode-stat-item">
+                            <span class="mode-stat-value" id="modeMixedAccuracy">0%</span>
+                            <span class="mode-stat-label">混合模式</span>
+                        </div>
+                    </div>
+                    
+                    <div class="options-grid" id="optionsGrid" style="display: none;"></div>
+                    
+                    <div class="result" id="resultText"></div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>学习进度</span>
+                            <span id="progressText">0/0</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls" id="studyControls">
+                        <button class="control-btn btn-primary" id="startBtn">开始学习</button>
+                        <button class="control-btn btn-success" id="reviewBtn">复习模式</button>
+                        <button class="control-btn btn-primary" id="checkBtn" style="display: none;">提交答案</button>
+                        <button class="control-btn btn-secondary" id="nextBtn" style="display: none;">下一题</button>
+                    </div>
+                </div>
+                
+                <!-- 模式选择 -->
+                <div class="card">
+                    <div class="mode-selector">
+                        <button class="mode-select-btn active" data-mode="kana-to-kanji" onclick="selectStudyMode('kana-to-kanji')">
+                            假名选汉字
+                        </button>
+                        <button class="mode-select-btn" data-mode="kanji-to-kana" onclick="selectStudyMode('kanji-to-kana')">
+                            汉字写假名
+                        </button>
+                        <button class="mode-select-btn" data-mode="mixed" onclick="selectStudyMode('mixed')">
+                            混合模式
+                        </button>
+                    </div>
+                    
+                    <button class="big-button button-secondary" onclick="switchTab('words')">
+                        📚 单词管理 (156个)
+                    </button>
+                    <button class="big-button button-success" onclick="switchTab('stats')">
+                        📊 学习统计
+                    </button>
+                    <button class="big-button" onclick="switchTab('settings')">
+                        ⚙️ 学习设置
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 单词管理页面 -->
+        <div id="wordsScreen" class="tab-content">
+            <div class="app-header">
+                <div class="header-content">
+                    <h1>单词管理</h1>
+                    <div class="subtitle">共156个单词，支持分类学习</div>
+                </div>
+            </div>
+            
+            <div class="app-body">
+                <div class="card">
+                    <input type="text" class="search-box" id="wordSearch" placeholder="搜索汉字或假名..." oninput="filterWords()">
+                    
+                    <div class="category-selector">
+                        <button class="category-btn active" onclick="filterByCategory('all')">全部单词</button>
+                        <button class="category-btn" onclick="filterByCategory('people')">人物相关</button>
+                        <button class="category-btn" onclick="filterByCategory('school')">学校相关</button>
+                        <button class="category-btn" onclick="filterByCategory('daily')">日常生活</button>
+                        <button class="category-btn" onclick="filterByCategory('time')">时间日期</button>
+                    </div>
+                    
+                    <div class="word-list" id="wordListContent"></div>
+                </div>
+                
+                <button class="big-button" onclick="switchTab('main')">返回学习</button>
+            </div>
+        </div>
+        
+        <!-- 统计页面 -->
+        <div id="statsScreen" class="tab-content">
+            <div class="app-header">
+                <div class="header-content">
+                    <h1>学习统计</h1>
+                    <div class="subtitle">查看您的学习进度和成就</div>
+                </div>
+            </div>
+            
+            <div class="app-body">
+                <div class="card">
+                    <div class="stats-bar" style="margin: 20px 0;">
+                        <div class="stat-item">
+                            <span class="stat-value" id="statTotalWords">156</span>
+                            <span class="stat-label">总单词</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="statLearned">0</span>
+                            <span class="stat-label">已学习</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="statAccuracy">0%</span>
+                            <span class="stat-label">正确率</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>总体进度</span>
+                            <span id="overallProgress">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="overallProgressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 25px;">
+                        <h3 style="margin-bottom: 15px;">各模式正确率</h3>
+                        <div class="mode-stats">
+                            <div class="mode-stat-item">
+                                <span class="mode-stat-value" id="statKanjiAccuracy">0%</span>
+                                <span class="mode-stat-label">假名选汉字</span>
+                            </div>
+                            <div class="mode-stat-item">
+                                <span class="mode-stat-value" id="statKanaAccuracy">0%</span>
+                                <span class="mode-stat-label">汉字写假名</span>
+                            </div>
+                            <div class="mode-stat-item">
+                                <span class="mode-stat-value" id="statMixedAccuracy">0%</span>
+                                <span class="mode-stat-label">混合模式</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 25px;">
+                        <h3 style="margin-bottom: 15px;">掌握程度分布</h3>
+                        <div id="masteryDistribution"></div>
+                    </div>
+                    
+                    <div style="margin-top: 25px;">
+                        <h3 style="margin-bottom: 15px;">学习记录</h3>
+                        <div id="studyHistory"></div>
+                    </div>
+                </div>
+                
+                <button class="big-button" onclick="switchTab('main')">返回学习</button>
+            </div>
+        </div>
+        
+        <!-- 设置页面 -->
+        <div id="settingsScreen" class="tab-content">
+            <div class="app-header">
+                <div class="header-content">
+                    <h1>学习设置</h1>
+                    <div class="subtitle">个性化您的学习体验</div>
+                </div>
+            </div>
+            
+            <div class="app-body">
+                <div class="card">
+                    <div class="setting-item">
+                        <span class="setting-label">打乱单词顺序</span>
+                        <label class="wechat-switch">
+                            <input type="checkbox" id="shuffleToggle" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <span class="setting-label">自动保存进度</span>
+                        <label class="wechat-switch">
+                            <input type="checkbox" id="autoSaveToggle" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <span class="setting-label">每轮学习单词数</span>
+                        <select id="batchSize" style="padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+                            <option value="10">10个</option>
+                            <option value="20" selected>20个</option>
+                            <option value="30">30个</option>
+                            <option value="50">50个</option>
+                            <option value="100">100个</option>
+                        </select>
+                    </div>
+                    
+                    <button class="big-button" onclick="saveSettings()" style="margin-top: 20px;">
+                        💾 保存设置
+                    </button>
+                    
+                    <button class="big-button button-secondary" onclick="exportData()" style="margin-top: 10px;">
+                        📤 导出学习数据
+                    </button>
+                    
+                    <button class="big-button button-success" onclick="importData()" style="margin-top: 10px;">
+                        📥 导入学习数据
+                    </button>
+                    
+                    <button class="big-button button-warning" onclick="resetData()" style="margin-top: 10px;">
+                        🔄 重置学习数据
+                    </button>
+                    
+                    <div class="wechat-tips" style="margin-top: 20px; padding: 15px; background: #f0f5ff; border-radius: 10px; font-size: 0.9rem;">
+                        <strong>📱 手机使用提示：</strong>
+                        <p style="margin-top: 8px;">1. 数据保存在浏览器中，清除缓存会丢失数据</p>
+                        <p>2. 建议定期使用"导出数据"功能备份</p>
+                        <p>3. 横屏模式可获得更好体验</p>
+                        <p>4. 三种模式可随时切换</p>
+                    </div>
+                </div>
+                
+                <button class="big-button" onclick="switchTab('main')">返回学习</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="switchTab('main')">
+            <span class="nav-icon">📖</span>
+            <span>学习</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchTab('words')">
+            <span class="nav-icon">📚</span>
+            <span>单词</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchTab('stats')">
+            <span class="nav-icon">📊</span>
+            <span>统计</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchTab('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span>设置</span>
+        </a>
+    </div>
+
+    <script>
+        // ==================== 完整单词库 ====================
+        const allWords = [
+            // 人物相关
+            { id: 1, kanji: "名前", kana: "なまえ", category: "people" },
+            { id: 2, kanji: "会社員", kana: "かいしゃいん", category: "people" },
+            { id: 3, kanji: "学生", kana: "がくせい", category: "people" },
+            { id: 4, kanji: "中国人", kana: "ちゅうごくじん", category: "people" },
+            { id: 5, kanji: "大学生", kana: "だいがくせい", category: "people" },
+            { id: 6, kanji: "友達", kana: "ともだち", category: "people" },
+            { id: 7, kanji: "留学生", kana: "りゅうがくせい", category: "people" },
+            { id: 8, kanji: "中学生", kana: "ちゅうがくせい", category: "people" },
+            { id: 9, kanji: "生徒", kana: "せいと", category: "people" },
+            { id: 10, kanji: "乗客", kana: "じょうきゃく", category: "people" },
+            { id: 11, kanji: "全員", kana: "ぜんいん", category: "people" },
+            { id: 12, kanji: "運転手", kana: "うんてんしゅ", category: "people" },
+            { id: 13, kanji: "教師", kana: "きょうし", category: "people" },
+            { id: 14, kanji: "お金持ち", kana: "おかねもち", category: "people" },
+            { id: 15, kanji: "後輩", kana: "こうはい", category: "people" },
+            { id: 16, kanji: "同級生", kana: "どうきゅうせい", category: "people" },
+            { id: 17, kanji: "歌手", kana: "かしゅ", category: "people" },
+            { id: 18, kanji: "仲良し", kana: "なかよし", category: "people" },
+            { id: 19, kanji: "男の人", kana: "おとこのひと", category: "people" },
+            { id: 20, kanji: "女の人", kana: "おんなのひと", category: "people" },
+            { id: 21, kanji: "相手", kana: "あいて", category: "people" },
+            { id: 22, kanji: "弟", kana: "おとうと", category: "people" },
+            { id: 23, kanji: "両親", kana: "りょうしん", category: "people" },
+            { id: 24, kanji: "人数", kana: "にんずう", category: "people" },
+            
+            // 学校相关
+            { id: 25, kanji: "学校", kana: "がっこう", category: "school" },
+            { id: 26, kanji: "先生", kana: "せんせい", category: "school" },
+            { id: 27, kanji: "教科書", kana: "きょうかしょ", category: "school" },
+            { id: 28, kanji: "机", kana: "つくえ", category: "school" },
+            { id: 29, kanji: "椅子", kana: "いす", category: "school" },
+            { id: 30, kanji: "辞書", kana: "じしょ", category: "school" },
+            { id: 31, kanji: "教室", kana: "きょうしつ", category: "school" },
+            { id: 32, kanji: "席", kana: "せき", category: "school" },
+            { id: 33, kanji: "英語", kana: "えいご", category: "school" },
+            { id: 34, kanji: "中国語", kana: "ちゅうごくご", category: "school" },
+            { id: 35, kanji: "体育館", kana: "たいいくかん", category: "school" },
+            { id: 36, kanji: "本棚", kana: "ほんだな", category: "school" },
+            { id: 37, kanji: "講堂", kana: "こうどう", category: "school" },
+            { id: 38, kanji: "小学校", kana: "しょうがっこう", category: "school" },
+            { id: 39, kanji: "学部", kana: "がくぶ", category: "school" },
+            { id: 40, kanji: "一年生", kana: "いちねんせい", category: "school" },
+            { id: 41, kanji: "自己紹介", kana: "じこしょうかい", category: "school" },
+            { id: 42, kanji: "勉強", kana: "べんきょう", category: "school" },
+            { id: 43, kanji: "試験", kana: "しけん", category: "school" },
+            { id: 44, kanji: "宿題", kana: "しゅくだい", category: "school" },
+            { id: 45, kanji: "発音", kana: "はつおん", category: "school" },
+            { id: 46, kanji: "研究室", kana: "けんきゅうしつ", category: "school" },
+            { id: 47, kanji: "部活", kana: "ぶかつ", category: "school" },
+            
+            // 日常生活
+            { id: 48, kanji: "日本", kana: "にほん", category: "daily" },
+            { id: 49, kanji: "経済", kana: "けいざい", category: "daily" },
+            { id: 50, kanji: "二人", kana: "ふたり", category: "daily" },
+            { id: 51, kanji: "新聞", kana: "しんぶん", category: "daily" },
+            { id: 52, kanji: "鞄", kana: "かばん", category: "daily" },
+            { id: 53, kanji: "手帳", kana: "てちょう", category: "daily" },
+            { id: 54, kanji: "自然", kana: "しぜん", category: "daily" },
+            { id: 55, kanji: "都市", kana: "とし", category: "daily" },
+            { id: 56, kanji: "努力", kana: "どりょく", category: "daily" },
+            { id: 57, kanji: "韓国", kana: "かんこく", category: "daily" },
+            { id: 58, kanji: "傘", kana: "かさ", category: "daily" },
+            { id: 59, kanji: "財布", kana: "さいふ", category: "daily" },
+            { id: 60, kanji: "子供", kana: "こども", category: "daily" },
+            { id: 61, kanji: "国", kana: "くに", category: "daily" },
+            { id: 62, kanji: "鍵", kana: "かぎ", category: "daily" },
+            { id: 63, kanji: "自転車", kana: "じてんしゃ", category: "daily" },
+            { id: 64, kanji: "案内", kana: "あんない", category: "daily" },
+            { id: 65, kanji: "部屋", kana: "へや", category: "daily" },
+            { id: 66, kanji: "猫", kana: "ねこ", category: "daily" },
+            { id: 67, kanji: "箱", kana: "はこ", category: "daily" },
+            { id: 68, kanji: "中", kana: "なか", category: "daily" },
+            { id: 69, kanji: "庭", kana: "にわ", category: "daily" },
+            { id: 70, kanji: "邪魔", kana: "じゃま", category: "daily" },
+            { id: 71, kanji: "昔", kana: "むかし", category: "daily" },
+            { id: 72, kanji: "玩具", kana: "おもちゃ", category: "daily" },
+            { id: 73, kanji: "今", kana: "いま", category: "daily" },
+            { id: 74, kanji: "池", kana: "いけ", category: "daily" },
+            { id: 75, kanji: "眼鏡", kana: "めがね", category: "daily" },
+            { id: 76, kanji: "時計", kana: "とけい", category: "daily" },
+            { id: 77, kanji: "寮", kana: "りょう", category: "daily" },
+            { id: 78, kanji: "果物", kana: "くだもの", category: "daily" },
+            { id: 79, kanji: "大変", kana: "たいへん", category: "daily" },
+            { id: 80, kanji: "梨", kana: "なし", category: "daily" },
+            { id: 81, kanji: "一日", kana: "いちにち", category: "daily" },
+            { id: 82, kanji: "食事", kana: "しょくじ", category: "daily" },
+            { id: 83, kanji: "会社", kana: "かいしゃ", category: "daily" },
+            { id: 84, kanji: "時間", kana: "じかん", category: "daily" },
+            { id: 85, kanji: "居酒屋", kana: "いざかや", category: "daily" },
+            { id: 86, kanji: "お風呂", kana: "おふろ", category: "daily" },
+            { id: 87, kanji: "買い物", kana: "かいもの", category: "daily" },
+            { id: 88, kanji: "注文", kana: "ちゅうもん", category: "daily" },
+            { id: 89, kanji: "所", kana: "ところ", category: "daily" },
+            { id: 90, kanji: "本当", kana: "ほんとう", category: "daily" },
+            { id: 91, kanji: "漫画", kana: "まんが", category: "daily" },
+            { id: 92, kanji: "海外", kana: "かいがい", category: "daily" },
+            { id: 93, kanji: "能力", kana: "のうりょく", category: "daily" },
+            { id: 94, kanji: "小説", kana: "しょうせつ", category: "daily" },
+            { id: 95, kanji: "歓迎会", kana: "かんげいかい", category: "daily" },
+            { id: 96, kanji: "電話", kana: "でんわ", category: "daily" },
+            { id: 97, kanji: "生活", kana: "せいかつ", category: "daily" },
+            { id: 98, kanji: "駅", kana: "えき", category: "daily" },
+            { id: 99, kanji: "最初", kana: "さいしょ", category: "daily" },
+            { id: 100, kanji: "元気", kana: "げんき", category: "daily" },
+            { id: 101, kanji: "最近", kana: "さいきん", category: "daily" },
+            { id: 102, kanji: "残業", kana: "ざんぎょう", category: "daily" },
+            { id: 103, kanji: "大柄", kana: "おおがら", category: "daily" },
+            { id: 104, kanji: "有名", kana: "ゆうめい", category: "daily" },
+            { id: 105, kanji: "交通", kana: "こうつう", category: "daily" },
+            { id: 106, kanji: "暇", kana: "ひま", category: "daily" },
+            { id: 107, kanji: "新鮮", kana: "しんせん", category: "daily" },
+            { id: 108, kanji: "道具", kana: "どうぐ", category: "daily" },
+            { id: 109, kanji: "川", kana: "かわ", category: "daily" },
+            { id: 110, kanji: "店", kana: "みせ", category: "daily" },
+            { id: 111, kanji: "郊外", kana: "こうがい", category: "daily" },
+            { id: 112, kanji: "全国", kana: "ぜんこく", category: "daily" },
+            { id: 113, kanji: "各地", kana: "かくち", category: "daily" },
+            { id: 114, kanji: "習慣", kana: "しゅうかん", category: "daily" },
+            { id: 115, kanji: "性格", kana: "せいかく", category: "daily" },
+            { id: 116, kanji: "一番", kana: "いちばん", category: "daily" },
+            { id: 117, kanji: "作り方", kana: "つくりかた", category: "daily" },
+            { id: 118, kanji: "出来立て", kana: "できたて", category: "daily" },
+            { id: 119, kanji: "素敵", kana: "すてき", category: "daily" },
+            { id: 120, kanji: "ご馳走", kana: "ごちそう", category: "daily" },
+            { id: 121, kanji: "予定", kana: "よてい", category: "daily" },
+            { id: 122, kanji: "約束", kana: "やくそく", category: "daily" },
+            { id: 123, kanji: "冗談", kana: "じょうだん", category: "daily" },
+            { id: 124, kanji: "切符", kana: "きっぷ", category: "daily" },
+            { id: 125, kanji: "荷物", kana: "にもつ", category: "daily" },
+            { id: 126, kanji: "本屋", kana: "ほんや", category: "daily" },
+            { id: 127, kanji: "町", kana: "まち", category: "daily" },
+            { id: 128, kanji: "本", kana: "ほん", category: "daily" },
+            
+            // 时间日期
+            { id: 129, kanji: "今日", kana: "きょう", category: "time" },
+            { id: 130, kanji: "冬休み", kana: "ふゆやすみ", category: "time" },
+            { id: 131, kanji: "晩ご飯", kana: "ばんごはん", category: "time" },
+            { id: 132, kanji: "朝ごはん", kana: "あさごはん", category: "time" },
+            { id: 133, kanji: "午後", kana: "ごご", category: "time" },
+            { id: 134, kanji: "朝食", kana: "ちょうしょく", category: "time" },
+            { id: 135, kanji: "週末", kana: "しゅうまつ", category: "time" },
+            { id: 136, kanji: "平日", kana: "へいじつ", category: "time" },
+            { id: 137, kanji: "午前", kana: "ごぜん", category: "time" },
+            { id: 138, kanji: "月曜日", kana: "げつようび", category: "time" },
+            { id: 139, kanji: "火曜日", kana: "かようび", category: "time" },
+            { id: 140, kanji: "水曜日", kana: "すいようび", category: "time" },
+            { id: 141, kanji: "木曜日", kana: "もくようび", category: "time" },
+            { id: 142, kanji: "金曜日", kana: "きんようび", category: "time" },
+            { id: 143, kanji: "土曜日", kana: "どようび", category: "time" },
+            { id: 144, kanji: "日曜日", kana: "にちようび", category: "time" },
+            { id: 145, kanji: "昨日", kana: "きのう", category: "time" },
+            { id: 146, kanji: "明日", kana: "あした", category: "time" },
+            { id: 147, kanji: "誕生日", kana: "たんじょうび", category: "time" },
+            
+            // 地点场所
+            { id: 148, kanji: "公園", kana: "こうえん", category: "place" },
+            { id: 149, kanji: "建物", kana: "たてもの", category: "place" },
+            { id: 150, kanji: "図書館", kana: "としょかん", category: "place" },
+            { id: 151, kanji: "映画館", kana: "えいがかん", category: "place" },
+            { id: 152, kanji: "食堂", kana: "しょくどう", category: "place" },
+            { id: 153, kanji: "旅行会社", kana: "りょこうがいしゃ", category: "place" },
+            { id: 154, kanji: "会議室", kana: "かいぎしつ", category: "place" },
+            { id: 155, kanji: "隣", kana: "となり", category: "place" },
+            { id: 156, kanji: "運動場", kana: "うんどうじょう", category: "place" },
+            { id: 157, kanji: "喫茶店", kana: "きっさてん", category: "place" },
+            { id: 158, kanji: "美容院", kana: "びよういん", category: "place" },
+            { id: 159, kanji: "郵便局", kana: "ゆうびんきょく", category: "place" },
+            
+            // 食物饮料
+            { id: 160, kanji: "食べ物", kana: "たべもの", category: "food" },
+            { id: 161, kanji: "飲み物", kana: "のみもの", category: "food" },
+            { id: 162, kanji: "料理", kana: "りょうり", category: "food" },
+            { id: 163, kanji: "お菓子", kana: "おかし", category: "food" },
+            
+            // 交通出行
+            { id: 164, kanji: "新幹線", kana: "しんかんせん", category: "transport" },
+            { id: 165, kanji: "飛行機", kana: "ひこうき", category: "transport" },
+            { id: 166, kanji: "船", kana: "ふね", category: "transport" },
+            { id: 167, kanji: "電車", kana: "でんしゃ", category: "transport" },
+            { id: 168, kanji: "車", kana: "くるま", category: "transport" },
+            
+            // 方向位置
+            { id: 169, kanji: "南", kana: "みなみ", category: "place" },
+            { id: 170, kanji: "北", kana: "きた", category: "place" },
+            { id: 171, kanji: "違う", kana: "ちがう", category: "daily" },
+            { id: 172, kanji: "簡単", kana: "かんたん", category: "daily" },
+            { id: 173, kanji: "音楽", kana: "おんがく", category: "daily" }
+        ];
+        
+        // 初始化变量
+        let currentWordIndex = 0;
+        let currentStudyMode = 'kana-to-kanji'; // 默认模式：假名选汉字
+        let selectedOption = null;
+        let studyData = {
+            learnedWords: {},
+            stats: {
+                correct: 0,
+                wrong: 0,
+                totalQuestions: 0,
+                lastStudy: null,
+                studyDays: [],
+                totalTime: 0,
+                modeStats: {
+                    'kana-to-kanji': { correct: 0, total: 0 },
+                    'kanji-to-kana': { correct: 0, total: 0 },
+                    'mixed': { correct: 0, total: 0 }
+                }
+            },
+            settings: {
+                shuffle: true,
+                autoSave: true,
+                batchSize: 20
+            },
+            sessionStart: null
+        };
+        
+        let currentStudyWords = [];
+        let filteredWords = [...allWords];
+        let currentCategory = 'all';
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudyData();
+            updateStatsDisplay();
+            renderWordList();
+            updateWordCounts();
+            updateModeAccuracyDisplay();
+            
+            // 绑定事件
+            document.getElementById('startBtn').addEventListener('click', startStudy);
+            document.getElementById('reviewBtn').addEventListener('click', startReview);
+            document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+            document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+            
+            // 设置切换
+            document.getElementById('shuffleToggle').addEventListener('change', function() {
+                studyData.settings.shuffle = this.checked;
+                if (studyData.settings.autoSave) saveStudyData();
+            });
+            
+            document.getElementById('autoSaveToggle').addEventListener('change', function() {
+                studyData.settings.autoSave = this.checked;
+                saveStudyData();
+            });
+            
+            document.getElementById('batchSize').addEventListener('change', function() {
+                studyData.settings.batchSize = parseInt(this.value);
+                if (studyData.settings.autoSave) saveStudyData();
+            });
+            
+            // 初始化设置
+            document.getElementById('shuffleToggle').checked = studyData.settings.shuffle;
+            document.getElementById('autoSaveToggle').checked = studyData.settings.autoSave;
+            document.getElementById('batchSize').value = studyData.settings.batchSize;
+            
+            // 更新总单词数显示
+            document.getElementById('totalWords').textContent = allWords.length;
+            document.getElementById('statTotalWords').textContent = allWords.length;
+        });
+        
+        // 选择学习模式
+        function selectStudyMode(mode) {
+            currentStudyMode = mode;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.mode-select-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 更新显示
+            updateModeAccuracyDisplay();
+        }
+        
+        // 切换标签页
+        function switchTab(tabName) {
+            // 隐藏所有标签页
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示目标标签页
+            document.getElementById(tabName + 'Screen').classList.add('active');
+            
+            // 更新导航栏
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item')[getTabIndex(tabName)].classList.add('active');
+            
+            // 更新内容
+            if (tabName === 'words') {
+                renderWordList();
+            } else if (tabName === 'stats') {
+                updateStatsDisplay();
+            }
+        }
+        
+        function getTabIndex(tabName) {
+            const tabs = ['main', 'words', 'stats', 'settings'];
+            return tabs.indexOf(tabName);
+        }
+        
+        // 开始学习
+        function startStudy() {
+            startSession();
+            
+            // 选择单词批次
+            const batchSize = Math.min(studyData.settings.batchSize, allWords.length);
+            let studyWords = [...allWords];
+            
+            if (studyData.settings.shuffle) {
+                studyWords = shuffleArray(studyWords);
+            }
+            
+            currentStudyWords = studyWords.slice(0, batchSize);
+            currentWordIndex = 0;
+            studyData.stats.correct = 0;
+            studyData.stats.wrong = 0;
+            studyData.stats.totalQuestions = 0;
+            
+            showQuestion();
+        }
+        
+        // 开始复习
+        function startReview() {
+            startSession();
+            
+            // 找出掌握度低的单词
+            let reviewWords = allWords.filter(word => {
+                const learned = studyData.learnedWords[word.id];
+                return !learned || learned.mastery < 70;
+            });
+            
+            if (reviewWords.length === 0) {
+                alert('恭喜！所有单词都已掌握，开始新一轮学习吧！');
+                reviewWords = [...allWords];
+            }
+            
+            const batchSize = Math.min(studyData.settings.batchSize, reviewWords.length);
+            if (studyData.settings.shuffle) {
+                reviewWords = shuffleArray(reviewWords);
+            }
+            
+            currentStudyWords = reviewWords.slice(0, batchSize);
+            currentWordIndex = 0;
+            studyData.stats.correct = 0;
+            studyData.stats.wrong = 0;
+            studyData.stats.totalQuestions = 0;
+            
+            showQuestion();
+        }
+        
+        // 开始学习会话
+        function startSession() {
+            studyData.sessionStart = new Date();
+            
+            // 更新按钮
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('reviewBtn').style.display = 'none';
+            document.getElementById('checkBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('resultText').textContent = '';
+            
+            // 显示选项区域
+            document.getElementById('optionsGrid').style.display = 'grid';
+        }
+        
+        // 显示问题
+        function showQuestion() {
+            if (!currentStudyWords || currentWordIndex >= currentStudyWords.length) {
+                endStudy();
+                return;
+            }
+            
+            const word = currentStudyWords[currentWordIndex];
+            selectedOption = null;
+            
+            // 确定当前问题的模式（如果是混合模式，随机选择）
+            let currentQuestionMode = currentStudyMode;
+            if (currentStudyMode === 'mixed') {
+                // 混合模式下随机选择问题类型
+                const modes = ['kana-to-kanji', 'kanji-to-kana'];
+                currentQuestionMode = modes[Math.floor(Math.random() * modes.length)];
+            }
+            
+            // 显示问题和模式指示器
+            if (currentQuestionMode === 'kana-to-kanji') {
+                document.getElementById('questionText').innerHTML = `"${word.kana}" 对应的汉字是？<span class="mode-indicator mode-kanji">假名选汉字</span>`;
+            } else {
+                document.getElementById('questionText').innerHTML = `"${word.kanji}" 的假名是？<span class="mode-indicator mode-kana">汉字写假名</span>`;
+            }
+            
+            // 生成选项
+            const options = generateOptions(word, currentQuestionMode);
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.dataset.index = index;
+                button.addEventListener('click', () => selectOption(button, index));
+                optionsGrid.appendChild(button);
+            });
+            
+            // 保存当前问题的模式
+            window.currentQuestionMode = currentQuestionMode;
+            window.currentWord = word;
+            
+            // 更新进度
+            updateProgress();
+            
+            // 重置结果
+            document.getElementById('resultText').textContent = '';
+            document.getElementById('resultText').className = 'result';
+        }
+        
+        // 生成选项
+        function generateOptions(correctWord, mode) {
+            const correctAnswer = mode === 'kana-to-kanji' ? correctWord.kanji : correctWord.kana;
+            const options = [correctAnswer];
+            
+            // 从其他单词中随机选择两个错误选项
+            const otherWords = allWords.filter(w => w.id !== correctWord.id);
+            const shuffled = shuffleArray([...otherWords]);
+            
+            for (let i = 0; i < 2 && i < shuffled.length; i++) {
+                const wrongAnswer = mode === 'kana-to-kanji' ? shuffled[i].kanji : shuffled[i].kana;
+                if (!options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+            
+            // 如果选项不足，补充默认选项
+            while (options.length < 3) {
+                options.push(mode === 'kana-to-kanji' ? '---' : '---');
+            }
+            
+            // 打乱选项顺序
+            return shuffleArray(options);
+        }
+        
+        // 选择选项
+        function selectOption(button, index) {
+            // 清除之前的选择
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // 标记当前选择
+            button.classList.add('selected');
+            selectedOption = {
+                element: button,
+                index: index,
+                text: button.textContent
+            };
+            
+            // 启用检查按钮
+            document.getElementById('checkBtn').disabled = false;
+        }
+        
+        // 检查答案
+        function checkAnswer() {
+            if (!selectedOption) {
+                alert('请先选择一个答案！');
+                return;
+            }
+            
+            const word = window.currentWord;
+            const mode = window.currentQuestionMode;
+            const correctAnswer = mode === 'kana-to-kanji' ? word.kanji : word.kana;
+            const isCorrect = selectedOption.text === correctAnswer;
+            
+            // 禁用所有选项
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn === selectedOption.element && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // 显示结果
+            const resultText = document.getElementById('resultText');
+            if (isCorrect) {
+                resultText.textContent = '✅ 回答正确！';
+                resultText.className = 'result correct';
+                studyData.stats.correct++;
+                
+                // 更新模式统计
+                if (studyData.stats.modeStats[mode]) {
+                    studyData.stats.modeStats[mode].correct++;
+                    studyData.stats.modeStats[mode].total++;
+                }
+            } else {
+                resultText.textContent = `❌ 回答错误！正确答案：${correctAnswer}`;
+                resultText.className = 'result incorrect';
+                studyData.stats.wrong++;
+                
+                // 更新模式统计
+                if (studyData.stats.modeStats[mode]) {
+                    studyData.stats.modeStats[mode].total++;
+                }
+            }
+            
+            // 更新单词掌握度
+            updateWordMastery(word.id, isCorrect, mode);
+            studyData.stats.totalQuestions++;
+            
+            // 更新按钮
+            document.getElementById('checkBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+            
+            // 更新统计显示
+            updateStatsDisplay();
+            updateModeAccuracyDisplay();
+            
+            // 自动保存
+            if (studyData.settings.autoSave) {
+                saveStudyData();
+            }
+        }
+        
+        // 下一题
+        function nextQuestion() {
+            currentWordIndex++;
+            if (currentWordIndex < currentStudyWords.length) {
+                showQuestion();
+                document.getElementById('checkBtn').style.display = 'block';
+                document.getElementById('checkBtn').disabled = true;
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                endStudy();
+            }
+        }
+        
+        // 结束学习
+        function endStudy() {
+            const accuracy = studyData.stats.totalQuestions > 0 
+                ? Math.round((studyData.stats.correct / studyData.stats.totalQuestions) * 100)
+                : 0;
+            
+            // 计算学习时间
+            if (studyData.sessionStart) {
+                const endTime = new Date();
+                const studyTime = Math.round((endTime - studyData.sessionStart) / 1000 / 60); // 分钟
+                studyData.stats.totalTime += studyTime;
+                studyData.sessionStart = null;
+            }
+            
+            // 更新学习日期
+            const today = new Date().toDateString();
+            if (!studyData.stats.studyDays.includes(today)) {
+                studyData.stats.studyDays.push(today);
+            }
+            studyData.stats.lastStudy = new Date().toLocaleString();
+            
+            document.getElementById('questionText').textContent = '学习完成！';
+            document.getElementById('optionsGrid').style.display = 'none';
+            document.getElementById('resultText').innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 10px;">🎉 本次学习完成！</div>
+                    <div>正确率：<strong>${accuracy}%</strong></div>
+                    <div>正确：${studyData.stats.correct}题 | 错误：${studyData.stats.wrong}题</div>
+                    <div style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                        学习了 ${currentStudyWords.length} 个单词
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('checkBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('reviewBtn').style.display = 'block';
+            document.getElementById('startBtn').textContent = '重新开始';
+            
+            // 保存数据
+            saveStudyData();
+            updateStatsDisplay();
+            renderWordList();
+        }
+        
+        // 更新单词掌握度
+        function updateWordMastery(wordId, isCorrect, mode) {
+            if (!studyData.learnedWords[wordId]) {
+                studyData.learnedWords[wordId] = {
+                    correct: 0,
+                    wrong: 0,
+                    mastery: 0,
+                    lastReview: new Date().toISOString(),
+                    reviewCount: 0,
+                    modeStats: {
+                        'kana-to-kanji': { correct: 0, total: 0 },
+                        'kanji-to-kana': { correct: 0, total: 0 }
+                    }
+                };
+            }
+            
+            const wordData = studyData.learnedWords[wordId];
+            
+            if (isCorrect) {
+                wordData.correct++;
+            } else {
+                wordData.wrong++;
+            }
+            
+            // 更新模式统计
+            if (wordData.modeStats[mode]) {
+                if (isCorrect) {
+                    wordData.modeStats[mode].correct++;
+                }
+                wordData.modeStats[mode].total++;
+            }
+            
+            wordData.reviewCount++;
+            const total = wordData.correct + wordData.wrong;
+            wordData.mastery = total > 0 ? Math.round((wordData.correct / total) * 100) : 0;
+            wordData.lastReview = new Date().toISOString();
+            
+            updateWordCounts();
+        }
+        
+        // 更新进度显示
+        function updateProgress() {
+            const total = currentStudyWords ? currentStudyWords.length : 0;
+            const progress = total > 0 ? Math.round(((currentWordIndex + 1) / total) * 100) : 0;
+            
+            document.getElementById('progressText').textContent = `${currentWordIndex + 1}/${total}`;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        // 更新统计显示
+        function updateStatsDisplay() {
+            const totalWords = allWords.length;
+            const learnedCount = Object.keys(studyData.learnedWords).length;
+            
+            // 已掌握单词数（掌握度>=80%）
+            const mastered = Object.values(studyData.learnedWords).filter(data => data.mastery >= 80).length;
+            
+            // 总正确率
+            const totalAnswered = studyData.stats.correct + studyData.stats.wrong;
+            const accuracy = totalAnswered > 0 ? Math.round((studyData.stats.correct / totalAnswered) * 100) : 0;
+            
+            // 更新显示
+            document.getElementById('masteredCount').textContent = mastered;
+            document.getElementById('accuracyRate').textContent = `${accuracy}%`;
+            
+            document.getElementById('statLearned').textContent = learnedCount;
+            document.getElementById('statAccuracy').textContent = `${accuracy}%`;
+            
+            // 总体进度
+            const overallProgress = Math.round((learnedCount / totalWords) * 100);
+            document.getElementById('overallProgress').textContent = `${overallProgress}%`;
+            document.getElementById('overallProgressFill').style.width = `${overallProgress}%`;
+            
+            // 掌握程度分布
+            updateMasteryDistribution();
+            
+            // 学习历史
+            updateStudyHistory();
+            
+            // 各模式正确率
+            updateModeStatistics();
+        }
+        
+        // 更新模式准确率显示
+        function updateModeAccuracyDisplay() {
+            const kanjiMode = studyData.stats.modeStats['kana-to-kanji'];
+            const kanaMode = studyData.stats.modeStats['kanji-to-kana'];
+            const mixedMode = studyData.stats.modeStats['mixed'];
+            
+            const kanjiAccuracy = kanjiMode.total > 0 ? Math.round((kanjiMode.correct / kanjiMode.total) * 100) : 0;
+            const kanaAccuracy = kanaMode.total > 0 ? Math.round((kanaMode.correct / kanaMode.total) * 100) : 0;
+            const mixedAccuracy = mixedMode.total > 0 ? Math.round((mixedMode.correct / mixedMode.total) * 100) : 0;
+            
+            document.getElementById('modeKanjiAccuracy').textContent = `${kanjiAccuracy}%`;
+            document.getElementById('modeKanaAccuracy').textContent = `${kanaAccuracy}%`;
+            document.getElementById('modeMixedAccuracy').textContent = `${mixedAccuracy}%`;
+        }
+        
+        // 更新模式统计
+        function updateModeStatistics() {
+            const kanjiMode = studyData.stats.modeStats['kana-to-kanji'];
+            const kanaMode = studyData.stats.modeStats['kanji-to-kana'];
+            const mixedMode = studyData.stats.modeStats['mixed'];
+            
+            const kanjiAccuracy = kanjiMode.total > 0 ? Math.round((kanjiMode.correct / kanjiMode.total) * 100) : 0;
+            const kanaAccuracy = kanaMode.total > 0 ? Math.round((kanaMode.correct / kanaMode.total) * 100) : 0;
+            const mixedAccuracy = mixedMode.total > 0 ? Math.round((mixedMode.correct / mixedMode.total) * 100) : 0;
+            
+            document.getElementById('statKanjiAccuracy').textContent = `${kanjiAccuracy}%`;
+            document.getElementById('statKanaAccuracy').textContent = `${kanaAccuracy}%`;
+            document.getElementById('statMixedAccuracy').textContent = `${mixedAccuracy}%`;
+        }
+        
+        // 更新掌握程度分布
+        function updateMasteryDistribution() {
+            const distributionElement = document.getElementById('masteryDistribution');
+            const masteryLevels = {
+                mastered: 0,    // 80-100%
+                learning: 0,    // 50-79%
+                struggling: 0,  // 1-49%
+                new: 0          // 0%
+            };
+            
+            allWords.forEach(word => {
+                const learned = studyData.learnedWords[word.id];
+                if (!learned) {
+                    masteryLevels.new++;
+                } else if (learned.mastery >= 80) {
+                    masteryLevels.mastered++;
+                } else if (learned.mastery >= 50) {
+                    masteryLevels.learning++;
+                } else {
+                    masteryLevels.struggling++;
+                }
+            });
+            
+            distributionElement.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: #d4edda; padding: 10px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.2rem; font-weight: bold;">${masteryLevels.mastered}</div>
+                        <div style="font-size: 0.8rem;">已掌握</div>
+                    </div>
+                    <div style="background: #fff3cd; padding: 10px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.2rem; font-weight: bold;">${masteryLevels.learning}</div>
+                        <div style="font-size: 0.8rem;">学习中</div>
+                    </div>
+                    <div style="background: #f8d7da; padding: 10px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.2rem; font-weight: bold;">${masteryLevels.struggling}</div>
+                        <div style="font-size: 0.8rem;">需加强</div>
+                    </div>
+                    <div style="background: #e2e3e5; padding: 10px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.2rem; font-weight: bold;">${masteryLevels.new}</div>
+                        <div style="font-size: 0.8rem;">未学习</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 更新学习历史
+        function updateStudyHistory() {
+            const historyElement = document.getElementById('studyHistory');
+            const lastStudy = studyData.stats.lastStudy || '暂无记录';
+            const studyDays = studyData.stats.studyDays.length;
+            const totalTime = Math.round(studyData.stats.totalTime);
+            
+            historyElement.innerHTML = `
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                    <div style="margin-bottom: 10px;">
+                        <strong>📅 最后学习时间：</strong>${lastStudy}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>📚 学习天数：</strong>${studyDays}天
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>⏱️ 总学习时长：</strong>${totalTime}分钟
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>✅ 总正确题数：</strong>${studyData.stats.correct}
+                    </div>
+                    <div>
+                        <strong>❌ 总错误题数：</strong>${studyData.stats.wrong}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 更新单词计数
+        function updateWordCounts() {
+            // 这里可以添加更详细的统计逻辑
+        }
+        
+        // 渲染单词列表
+        function renderWordList() {
+            const wordListContent = document.getElementById('wordListContent');
+            wordListContent.innerHTML = '';
+            
+            filteredWords.forEach(word => {
+                const wordData = studyData.learnedWords[word.id];
+                const mastery = wordData ? wordData.mastery : 0;
+                
+                let masteryBadge = '';
+                if (mastery >= 80) {
+                    masteryBadge = '<span class="mastery-badge badge-mastered">已掌握</span>';
+                } else if (mastery >= 50) {
+                    masteryBadge = `<span class="mastery-badge badge-learning">${mastery}%</span>`;
+                } else if (mastery > 0) {
+                    masteryBadge = `<span class="mastery-badge badge-new">${mastery}%</span>`;
+                } else {
+                    masteryBadge = '<span class="mastery-badge badge-new">未学</span>';
+                }
+                
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                wordItem.innerHTML = `
+                    <div class="word-text">
+                        <span class="kanji">${word.kanji}</span>
+                        <span class="kana">(${word.kana})</span>
+                    </div>
+                    <div class="word-stats">
+                        ${masteryBadge}
+                    </div>
+                `;
+                wordListContent.appendChild(wordItem);
+            });
+        }
+        
+        // 过滤单词
+        function filterWords() {
+            const searchText = document.getElementById('wordSearch').value.toLowerCase();
+            filteredWords = allWords.filter(word => 
+                word.kanji.toLowerCase().includes(searchText) || 
+                word.kana.toLowerCase().includes(searchText)
+            );
+            renderWordList();
+        }
+        
+        // 按分类过滤
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // 更新分类按钮状态
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (category === 'all') {
+                filteredWords = [...allWords];
+            } else {
+                filteredWords = allWords.filter(word => word.category === category);
+            }
+            
+            renderWordList();
+        }
+        
+        // 保存设置
+        function saveSettings() {
+            saveStudyData();
+            alert('设置已保存！');
+        }
+        
+        // 导出数据
+        function exportData() {
+            const dataStr = JSON.stringify(studyData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `日语学习数据_三模式版_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('数据已导出为JSON文件！');
+        }
+        
+        // 导入数据
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        studyData = importedData;
+                        saveStudyData();
+                        loadStudyData();
+                        updateStatsDisplay();
+                        renderWordList();
+                        updateModeAccuracyDisplay();
+                        alert('数据导入成功！');
+                    } catch (error) {
+                        alert('导入失败：文件格式不正确');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        // 重置数据
+        function resetData() {
+            if (confirm('确定要重置所有学习数据吗？此操作不可撤销！')) {
+                studyData = {
+                    learnedWords: {},
+                    stats: {
+                        correct: 0,
+                        wrong: 0,
+                        totalQuestions: 0,
+                        lastStudy: null,
+                        studyDays: [],
+                        totalTime: 0,
+                        modeStats: {
+                            'kana-to-kanji': { correct: 0, total: 0 },
+                            'kanji-to-kana': { correct: 0, total: 0 },
+                            'mixed': { correct: 0, total: 0 }
+                        }
+                    },
+                    settings: {
+                        shuffle: true,
+                        autoSave: true,
+                        batchSize: 20
+                    },
+                    sessionStart: null
+                };
+                
+                saveStudyData();
+                updateStatsDisplay();
+                renderWordList();
+                updateModeAccuracyDisplay();
+                alert('学习数据已重置！');
+            }
+        }
+        
+        // 保存学习数据
+        function saveStudyData() {
+            try {
+                localStorage.setItem('japaneseThreeModeStudyData', JSON.stringify(studyData));
+            } catch (e) {
+                console.error('保存数据失败:', e);
+            }
+        }
+        
+        // 加载学习数据
+        function loadStudyData() {
+            try {
+                const saved = localStorage.getItem('japaneseThreeModeStudyData');
+                if (saved) {
+                    studyData = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('加载数据失败:', e);
+            }
+        }
+        
+        // 工具函数：打乱数组
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+        
+        // 页面关闭前自动保存
+        window.addEventListener('beforeunload', function() {
+            if (studyData.settings.autoSave) {
+                saveStudyData();
+            }
+        });
+        
+        // 防止微信下拉刷新
+        if (/MicroMessenger/i.test(navigator.userAgent)) {
+            let lastTouchY = 0;
+            document.body.addEventListener('touchstart', function(e) {
+                lastTouchY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            document.body.addEventListener('touchmove', function(e) {
+                const touchY = e.touches[0].clientY;
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                
+                // 如果在顶部且向下拉，阻止默认行为
+                if (scrollTop === 0 && touchY > lastTouchY) {
+                    e.preventDefault();
+                }
+                lastTouchY = touchY;
+            }, { passive: false });
+        }
+    </script>
+</body>
+</html>
